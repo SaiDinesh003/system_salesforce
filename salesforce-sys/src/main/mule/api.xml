@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd 
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd">
+	 <flow name="businessusecase-main">
+        <http:listener config-ref="HTTP_Listener_config" path="/api/*">
+            <http:response statusCode="#[vars.httpStatus default 200]">
+                <http:headers><![CDATA[#[vars.outboundHeaders default {}]]]></http:headers>
+            </http:response>
+            <http:error-response statusCode="#[vars.httpStatus default 500]">
+                <http:body><![CDATA[#[payload]]]></http:body>
+                <http:headers><![CDATA[#[vars.outboundHeaders default {}]]]></http:headers>
+            </http:error-response>
+        </http:listener>
+        <apikit:router doc:id="96fedab9-e413-4f0e-90cf-6e30e11dc023" config-ref="salesforce-config"/>
+    </flow>
+    <flow name="put:\sf\upsert:salesforce-config">
+		<flow-ref doc:name="Flow Reference" doc:id="d3ca9b34-1b27-485c-a0cc-8363052c81e4" name="pf-upsert-customer"/>
+
+    </flow>
+    <flow name="get:\sf\retrieve:salesforce-config">
+		<flow-ref doc:name="Flow Reference" doc:id="c723ab1f-b29a-4c91-952a-d4ed06d62bc0" name="pf-get-customer"/>
+
+    </flow>
+    <flow name="post:\sf\create:salesforce-config">
+		<flow-ref doc:name="Flow Reference" doc:id="9a6d0ae4-86e7-42ed-989b-d1fd5e55e4a8" name="pf-insert-customer"/>
+    
+</flow>
+    </mule>

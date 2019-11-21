@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd 
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd">
+	<flow name="pf-upsert-customer" doc:id="501bc0fb-80f0-46fe-b570-77de0b1b1912" >
+		<logger level="INFO" doc:name="LOG INFO Start System" doc:id="2558bdaa-0290-4279-a6cf-f3461dc29291" message="Starting System Layer With CorrelationId #[vars.correlationId]" />
+		<ee:transform doc:name="Transform Message" doc:id="93cea04e-58fb-4734-8234-ee854bd484b2" >
+            <ee:message >
+                <ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+[
+payload
+]]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
+		 <salesforce:upsert doc:name="Upsert" doc:id="7c185bd5-303b-4c44-aee7-494bc9913fa7" config-ref="Salesforce_Config" type="Account" externalIdFieldName="ExternalId__c"/>
+		<logger level="INFO" doc:name="Logger" doc:id="b3c9c54b-b494-4f53-8c60-fbe9527d0068" message="#[payload]"/>
+		<logger level="INFO" doc:name="LOG INFO End System" doc:id="bb2e9a87-812c-41dc-84b7-0702aa3b088d" message="Starting System Layer With CorrelationId #[vars.correlationId]" />
+	
+</flow></mule>
